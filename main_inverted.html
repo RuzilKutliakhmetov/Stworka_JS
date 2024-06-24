@@ -42,6 +42,20 @@
 			}
 
 			const { coordinates, maxX, maxY, minY } = calculateCoordinates(data)
+			console.log(coordinates)
+
+			const svgContainer = document.getElementById('svgContainer')
+
+			let elementIndex = 1
+			coordinates.forEach(element => {
+				let p = document.createElement('p')
+				p.innerHTML +=
+					'Точка №' + elementIndex + ' - ' + element.toString() + `\n`
+				p.style.cssText = 'color: #123e8f; '
+				elementIndex += 1
+				svgContainer.before(p)
+			})
+
 			const polylinePoints = coordinates.join(' ')
 
 			// Создание элемента <polygon>
@@ -54,7 +68,6 @@
 			polygon.setAttribute('fill', '#3579f5')
 
 			// Добавление полигона в SVG
-			const svgContainer = document.getElementById('svgContainer')
 			svgContainer.appendChild(polygon)
 
 			// Установка viewBox для svgContainer
