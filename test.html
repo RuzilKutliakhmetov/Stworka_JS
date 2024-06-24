@@ -24,26 +24,24 @@
 				const coordinates = ['0 0'] // Начальная точка
 				let maxX = 0,
 					maxY = 0,
-					minX = 0,
 					minY = 0 // Для расчета viewBox
 
 				for (const { length, angle } of data) {
 					const radians = (angle * Math.PI) / 180
 					x += (length / scale) * Math.cos(radians)
 					y += (length / scale) * Math.sin(radians)
-					coordinates.push(`${x.toFixed(2)} ${y.toFixed(2)}`)
+					coordinates.push(`${x.toFixed(2)} ${(-y).toFixed(2)}`) // Инвертируем Y
 
 					// Обновляем границы фигуры
 					maxX = Math.max(maxX, x)
-					maxY = Math.max(maxY, y)
-					minX = Math.min(minX, x)
-					minY = Math.min(minY, y)
+					maxY = Math.max(maxY, -y) // Инвертируем Y для maxY
+					minY = Math.min(minY, -y) // Находим минимальное значение для minY
 				}
 
-				return { coordinates, maxX, maxY, minX, minY }
+				return { coordinates, maxX, maxY, minY }
 			}
 
-			const { coordinates, maxX, maxY, minX, minY } = calculateCoordinates(data)
+			const { coordinates, maxX, maxY, minY } = calculateCoordinates(data)
 			const polylinePoints = coordinates.join(' ')
 
 			// Создание элемента <polygon>
@@ -60,10 +58,7 @@
 			svgContainer.appendChild(polygon)
 
 			// Установка viewBox для svgContainer
-			svgContainer.setAttribute(
-				'viewBox',
-				`${minX} ${minY} ${maxX - minX} ${maxY - minY}`
-			)
+			svgContainer.setAttribute('viewBox', `0 ${minY} ${maxX} ${maxY - minY}`)
 		</script>
 	</body>
 </html>
